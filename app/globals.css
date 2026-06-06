@@ -180,6 +180,41 @@ a { color: var(--accent2); text-decoration: none; }
   color: var(--muted);
 }
 .vote-btn.self:hover { background: rgba(255,255,255,0.05); }
+.hold-area {
+  background: #0f1226;
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  padding: 40px 20px;
+  margin: 16px 0;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.hold-area.active {
+  background: #1a1f3d;
+  border-color: var(--accent2);
+  border-style: solid;
+}
+.hold-hint {
+  text-align: center;
+  color: var(--muted);
+  font-size: 15px;
+}
+.word-reveal {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+.word-reveal.impostor { color: var(--accent); font-size: 24px; }
+
 .vote-count {
   background: var(--accent);
   color: white;

@@ -88,6 +88,12 @@ export default function Home() {
       <button className="secondary" onClick={joinRoom} disabled={busy}>Entrar em sala existente</button>
 
       {error && <div className="error">{error}</div>}
+
+      <div className="divider"><span>OU</span></div>
+
+      <button className="secondary" onClick={() => router.push('/local')}>
+        📱 Modo passa-celular (1 dispositivo)
+      </button>
     </div>
   );
 }
