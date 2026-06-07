@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getPlayerId, getStoredName, setStoredName } from '@/lib/playerId';
 
@@ -10,6 +10,7 @@ export default function Home() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [aura, setAura] = useState(false);
+  const tapState = useRef({ count: 0, last: 0 });
 
   useEffect(() => {
     setName(getStoredName());
@@ -79,7 +80,14 @@ export default function Home() {
     <>
       {aura && <AuraOverlay onClose={() => setAura(false)} />}
     <div className="app">
-      <h1>Jogo do <span className="accent">Impostor</span></h1>
+      <h1 onClick={() => {
+        const now = Date.now();
+        const s = tapState.current;
+        if (now - s.last > 800) s.count = 0;
+        s.last = now;
+        s.count++;
+        if (s.count >= 5) { setAura(true); s.count = 0; }
+      }}>Jogo do <span className="accent">Impostor</span></h1>
       <p className="sub">Cada jogador entra do seu celular ou computador.</p>
 
       <label>Seu nome</label>
