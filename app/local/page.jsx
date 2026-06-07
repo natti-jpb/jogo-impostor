@@ -22,6 +22,7 @@ export default function LocalMode() {
 
   const [game, setGame] = useState(null); // { word, category, impostorIndexes:Set, players:[names], current, starter }
   const [holding, setHolding] = useState(false);
+  const [revealed, setRevealed] = useState(false);
   const holdTimer = useRef(null);
 
   function updateName(i, v) {
@@ -51,6 +52,7 @@ export default function LocalMode() {
     const starter = clean[Math.floor(Math.random() * clean.length)];
 
     setGame({ players: clean, word, category: chosenCat, impostorIndexes, current: 0, starter });
+    setRevealed(false);
     setPhase('passing');
   }
 
@@ -78,6 +80,7 @@ export default function LocalMode() {
     const impostorIndexes = new Set(indexes.slice(0, impostorCount));
     const starter = game.players[Math.floor(Math.random() * game.players.length)];
     setGame({ ...game, word, category: chosenCat, impostorIndexes, current: 0, starter });
+    setRevealed(false);
     setPhase('passing');
   }
 
@@ -179,6 +182,7 @@ export default function LocalMode() {
 
   // DONE
   if (phase === 'done') {
+    const impostorNames = [...game.impostorIndexes].map(i => game.players[i]);
     return (
       <div className="app">
         <h1>Todos viram!</h1>
@@ -188,7 +192,18 @@ export default function LocalMode() {
           Cada um diz uma palavra/dica sobre a palavra secreta, sem entregar. Discutam e descubram quem é o impostor!
         </p>
 
-        <button onClick={newRound}>Nova rodada (mesmos jogadores)</button>
+        {revealed ? (
+          <>
+            <div className="instruction" style={{ marginTop: 16 }}>A palavra era:</div>
+            <div className="word-box">{game.word}</div>
+            <div className="instruction">Impostor{impostorNames.length > 1 ? 'es' : ''}:</div>
+            <div className="word-box impostor">{impostorNames.join(' • ')}</div>
+          </>
+        ) : (
+          <button onClick={() => setRevealed(true)}>Revelar impostor{game.impostorIndexes.size > 1 ? 'es' : ''}</button>
+        )}
+
+        <button className={revealed ? '' : 'secondary'} onClick={newRound}>Nova rodada (mesmos jogadores)</button>
         <button className="secondary" onClick={backToSetup}>Mudar jogadores</button>
       </div>
     );
