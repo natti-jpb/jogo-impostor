@@ -116,10 +116,12 @@ export default function Home() {
 }
 
 const NEYMAR_IMAGES = [
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Neymar_2018.jpg/480px-Neymar_2018.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Neymar_PSG.jpg/480px-Neymar_PSG.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Neymar_with_Al_Hilal_2024.jpg/480px-Neymar_with_Al_Hilal_2024.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Neymar_2011.jpg/480px-Neymar_2011.jpg',
+  'https://commons.wikimedia.org/wiki/Special:FilePath/Neymar_PSG.jpg?width=600',
+  'https://commons.wikimedia.org/wiki/Special:FilePath/Neymar_2018.jpg?width=600',
+  'https://commons.wikimedia.org/wiki/Special:FilePath/Neymar_(cropped).jpg?width=600',
+  'https://commons.wikimedia.org/wiki/Special:FilePath/Neymar_Jr_Presentation.jpg?width=600',
+  'https://commons.wikimedia.org/wiki/Special:FilePath/Neymar_2012.JPG?width=600',
+  'https://commons.wikimedia.org/wiki/Special:FilePath/Neymar_Junior_the_Future_of_Brazil.jpg?width=600',
 ];
 
 function AuraOverlay({ onClose }) {
@@ -147,7 +149,6 @@ function AuraOverlay({ onClose }) {
           <img key={i} src={src} alt="Neymar" className="aura-img" style={{ animationDelay: `${i * 0.4}s` }} />
         ))}
       </div>
-      <div className="aura-banner">NEYMAR FARMANDO AURA</div>
       <div className="aura-hint">clica ou aperta ESC pra sair</div>
     </div>
   );
