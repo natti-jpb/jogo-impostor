@@ -2,9 +2,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getPlayerId, getStoredName, setStoredName } from '@/lib/playerId';
+import { LANGS, LANG_LABELS, useLang, t } from '@/lib/i18n';
 
 export default function Home() {
   const router = useRouter();
+  const [lang, setLang] = useLang();
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
@@ -30,7 +32,7 @@ export default function Home() {
   }, []);
 
   async function createRoom() {
-    if (!name.trim()) return setError('Coloque seu nome');
+    if (!name.trim()) return setError(t(lang, 'err_name'));
     setError(''); setBusy(true);
     setStoredName(name.trim());
     try {
@@ -42,15 +44,15 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'erro');
       router.push(`/room/${data.code}`);
-    } catch (e) {
-      setError('Não foi possível criar a sala');
+    } catch {
+      setError(t(lang, 'err_create'));
       setBusy(false);
     }
   }
 
   async function joinRoom() {
-    if (!name.trim()) return setError('Coloque seu nome');
-    if (code.length !== 4) return setError('Código tem 4 letras');
+    if (!name.trim()) return setError(t(lang, 'err_name'));
+    if (code.length !== 4) return setError(t(lang, 'err_code_len'));
     setError(''); setBusy(true);
     setStoredName(name.trim());
     try {
@@ -62,12 +64,12 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) {
         const map = {
-          not_found: 'Sala não encontrada',
-          game_started: 'O jogo já começou',
-          room_full: 'Sala cheia',
-          name_taken: 'Esse nome já está em uso na sala',
+          not_found: t(lang, 'err_not_found'),
+          game_started: t(lang, 'err_started'),
+          room_full: t(lang, 'err_full'),
+          name_taken: t(lang, 'err_name_taken'),
         };
-        throw new Error(map[data.error] || 'erro');
+        throw new Error(map[data.error] || t(lang, 'err_generic'));
       }
       router.push(`/room/${code.toUpperCase()}`);
     } catch (e) {
@@ -78,8 +80,18 @@ export default function Home() {
 
   return (
     <>
-      {aura && <AuraOverlay onClose={() => setAura(false)} />}
+      {aura && <AuraOverlay lang={lang} onClose={() => setAura(false)} />}
     <div className="app">
+      <div className="lang-switcher">
+        {LANGS.map(l => (
+          <button
+            key={l}
+            className={'lang-btn' + (lang === l ? ' active' : '')}
+            onClick={() => setLang(l)}
+          >{LANG_LABELS[l]}</button>
+        ))}
+      </div>
+
       <h1 onClick={() => {
         const now = Date.now();
         const s = tapState.current;
@@ -87,36 +99,36 @@ export default function Home() {
         s.last = now;
         s.count++;
         if (s.count >= 5) { setAura(true); s.count = 0; }
-      }}>Jogo do <span className="accent">Impostor</span></h1>
-      <p className="sub">Cada jogador entra do seu celular ou computador.</p>
+      }}>{t(lang, 'title_part1')} <span className="accent">{t(lang, 'title_part2')}</span></h1>
+      <p className="sub">{t(lang, 'home_sub')}</p>
 
-      <label>Seu nome</label>
+      <label>{t(lang, 'name')}</label>
       <input
         value={name}
         onChange={e => setName(e.target.value)}
         maxLength={20}
-        placeholder="Como te chamam?"
+        placeholder={t(lang, 'name_ph')}
       />
 
-      <button onClick={createRoom} disabled={busy}>Criar nova sala</button>
+      <button onClick={createRoom} disabled={busy}>{t(lang, 'create_room')}</button>
 
-      <div className="divider"><span>OU</span></div>
+      <div className="divider"><span>{t(lang, 'or')}</span></div>
 
-      <label>Código da sala</label>
+      <label>{t(lang, 'room_code')}</label>
       <input
         value={code}
         onChange={e => setCode(e.target.value.toUpperCase().slice(0, 4))}
-        placeholder="ABCD"
+        placeholder={t(lang, 'code_ph')}
         style={{ textAlign: 'center', letterSpacing: 6, fontSize: 22 }}
       />
-      <button className="secondary" onClick={joinRoom} disabled={busy}>Entrar em sala existente</button>
+      <button className="secondary" onClick={joinRoom} disabled={busy}>{t(lang, 'join_room')}</button>
 
       {error && <div className="error">{error}</div>}
 
-      <div className="divider"><span>OU</span></div>
+      <div className="divider"><span>{t(lang, 'or')}</span></div>
 
       <button className="secondary" onClick={() => router.push('/local')}>
-        📱 Modo passa-celular (1 dispositivo)
+        {t(lang, 'local_mode')}
       </button>
     </div>
     </>
@@ -132,7 +144,7 @@ const NEYMAR_IMAGES = [
   'https://commons.wikimedia.org/wiki/Special:FilePath/Neymar_Junior_the_Future_of_Brazil.jpg?width=600',
 ];
 
-function AuraOverlay({ onClose }) {
+function AuraOverlay({ lang, onClose }) {
   const emojis = ['⚽','🇧🇷','✨','🔥','👑','⭐','💚','💛','😎','🐐'];
   return (
     <div className="aura-overlay" onClick={onClose}>
@@ -157,7 +169,7 @@ function AuraOverlay({ onClose }) {
           <img key={i} src={src} alt="Neymar" className="aura-img" style={{ animationDelay: `${i * 0.4}s` }} />
         ))}
       </div>
-      <div className="aura-hint">clica ou aperta ESC pra sair</div>
+      <div className="aura-hint">{t(lang, 'aura_hint')}</div>
     </div>
   );
 }

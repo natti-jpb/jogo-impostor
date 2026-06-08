@@ -443,6 +443,36 @@ a { color: var(--azul); text-decoration: none; font-weight: 700; }
   box-shadow: 0 4px 0 #b8c0d0;
 }
 .vote-btn.self:hover { background: #f4f6fb; }
+.lang-switcher {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.lang-btn {
+  width: auto;
+  flex: 0 0 auto;
+  margin-top: 0;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  background: #f4f6fb;
+  color: var(--azul);
+  border: 2px solid #d8dce8;
+  box-shadow: none;
+  border-radius: 999px;
+}
+.lang-btn:hover { background: #eef1fa; }
+.lang-btn.active {
+  background: var(--verde);
+  color: #fff;
+  border-color: var(--verde-dark);
+}
+.lang-btn:active { transform: none; }
+
 /* ===== Easter egg: BRASIL → Neymar farmando aura ===== */
 .aura-overlay {
   position: fixed;
