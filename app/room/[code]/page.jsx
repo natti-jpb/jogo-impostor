@@ -151,7 +151,7 @@ export default function RoomPage({ params }) {
         <div className="code-display">
           <div className="label-small">{t(lang, 'share_code')}</div>
           <div className="code">{code}</div>
-          <div className="share-link">{typeof window !== 'undefined' ? window.location.origin + '/room/' + code : ''}</div>
+          <div className="share-link">{typeof window !== 'undefined' ? window.location.origin + apiPath('/room/' + code) : ''}</div>
         </div>
 
         <label>{t(lang, 'players')} ({state.players.length})</label>
