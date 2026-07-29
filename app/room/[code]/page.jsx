@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { getPlayerId, getStoredName, setStoredName } from '@/lib/playerId';
 import { CATEGORY_KEYS, CATEGORY_LABELS } from '@/lib/words';
 import { useLang, t } from '@/lib/i18n';
+import { apiPath } from '@/lib/apiPath';
 
 export default function RoomPage({ params }) {
   const { code } = use(params);
@@ -20,7 +21,7 @@ export default function RoomPage({ params }) {
 
   const fetchState = useCallback(async () => {
     try {
-      const res = await fetch(`/api/rooms/${code}?playerId=${playerId}`, { cache: 'no-store' });
+      const res = await fetch(apiPath(`/api/rooms/${code}?playerId=${playerId}`), { cache: 'no-store' });
       if (res.status === 404) { setError(t(lang, 'expired')); return; }
       const data = await res.json();
       setState(data);
@@ -41,7 +42,7 @@ export default function RoomPage({ params }) {
   async function join() {
     if (!joinName.trim()) return;
     setStoredName(joinName.trim());
-    const res = await fetch(`/api/rooms/${code}/join`, {
+    const res = await fetch(apiPath(`/api/rooms/${code}/join`), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: joinName.trim(), playerId }),
@@ -55,7 +56,7 @@ export default function RoomPage({ params }) {
   }
 
   async function startGame() {
-    const res = await fetch(`/api/rooms/${code}/start`, {
+    const res = await fetch(apiPath(`/api/rooms/${code}/start`), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ playerId, impostorCount, categoryKey, language: lang }),
@@ -68,7 +69,7 @@ export default function RoomPage({ params }) {
   }
 
   async function reveal() {
-    await fetch(`/api/rooms/${code}/reset`, {
+    await fetch(apiPath(`/api/rooms/${code}/reset`), {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ playerId, mode: 'reveal' }),
     });
@@ -76,7 +77,7 @@ export default function RoomPage({ params }) {
   }
 
   async function backToLobby() {
-    await fetch(`/api/rooms/${code}/reset`, {
+    await fetch(apiPath(`/api/rooms/${code}/reset`), {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ playerId, mode: 'lobby' }),
     });
@@ -86,7 +87,7 @@ export default function RoomPage({ params }) {
   async function vote(targetId) {
     const next = state?.myVote === targetId ? null : targetId;
     setState(s => s ? { ...s, myVote: next } : s);
-    await fetch(`/api/rooms/${code}/vote`, {
+    await fetch(apiPath(`/api/rooms/${code}/vote`), {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ playerId, targetId: next }),
     });
@@ -94,7 +95,7 @@ export default function RoomPage({ params }) {
   }
 
   async function leave() {
-    await fetch(`/api/rooms/${code}/leave`, {
+    await fetch(apiPath(`/api/rooms/${code}/leave`), {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ playerId }),
     });

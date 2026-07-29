@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getPlayerId, getStoredName, setStoredName } from '@/lib/playerId';
 import { LANGS, LANG_LABELS, useLang, t } from '@/lib/i18n';
+import { apiPath } from '@/lib/apiPath';
 
 export default function Home() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function Home() {
     setError(''); setBusy(true);
     setStoredName(name.trim());
     try {
-      const res = await fetch('/api/rooms', {
+      const res = await fetch(apiPath('/api/rooms'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name.trim(), playerId: getPlayerId() }),
@@ -56,7 +57,7 @@ export default function Home() {
     setError(''); setBusy(true);
     setStoredName(name.trim());
     try {
-      const res = await fetch(`/api/rooms/${code.toUpperCase()}/join`, {
+      const res = await fetch(apiPath(`/api/rooms/${code.toUpperCase()}/join`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name.trim(), playerId: getPlayerId() }),
